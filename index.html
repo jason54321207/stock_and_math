@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Markets in Simple Math</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <nav class="nav-bar">
+      <a href="index.html" class="nav-button nav-button--active">Slides</a>
+      <a href="elaborate.html" class="nav-button">Elaborate reading</a>
+    </nav>
+
+    <header class="page-header">
+      <div class="header-kicker">Slide Decks on Trading &amp; Probability</div>
+      <h1>Markets in Simple Math</h1>
+      <p class="header-lead">
+        Short, self-contained slide decks that use gentle mathematics to build intuition
+        about how markets move, aimed at curious beginners rather than professionals.
+      </p>
+    </header>
+
+    <section class="section">
+      <h2 class="section-title">Available Decks</h2>
+
+      <ul class="deck-list" id="deck-list">
+        <li class="deck" id="deck-loading">
+          <div class="deck-link">
+            <div class="deck-body">
+              <h3 class="deck-title">Loading decks…</h3>
+              <p class="deck-subtitle">
+                Fetching the list of PDFs from the repository.
+              </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <footer class="page-footer">
+      Place slide decks (PDF files) alongside <code>index.html</code> in this repository.
+      They will appear here automatically.
+    </footer>
+  </main>
+
+  <script>
+    // --- configuration: update these two lines ---
+    const GITHUB_USER = "jason54321207";        // your GitHub username
+    const GITHUB_REPO = "study_stock";    // this repository’s name
+    const PDF_PATH = "";                     // "" = repo root
+    // -------------------------------------------
+
+    const deckListEl = document.getElementById("deck-list");
+
+    function filenameToTitle(name) {
+      const base = name.replace(/\.pdf$/i, "");
+      return base
+        .replace(/[_-]+/g, " ")
+        .split(" ")
+        .filter(Boolean)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
+    }
+
+    function createDeckCard(file) {
+      const li = document.createElement("li");
+      li.className = "deck";
+
+      const a = document.createElement("a");
+      a.className = "deck-link";
+      a.href = (PDF_PATH ? PDF_PATH + "/" : "") + file.name;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+
+      const thumb = document.createElement("div");
+      thumb.className = "deck-thumb";
+
+      const obj = document.createElement("object");
+      obj.type = "application/pdf";
+      obj.data = a.href + "#page=1&view=FitH";
+      obj.setAttribute("aria-label", "Preview of the first page of the slide deck");
+
+      const fallback = document.createElement("p");
+      fallback.className = "thumb-fallback";
+      fallback.textContent = "Preview unavailable. Click to open the slides (PDF).";
+
+      obj.appendChild(fallback);
+      thumb.appendChild(obj);
+
+      const body = document.createElement("div");
+      body.className = "deck-body";
+
+      const title = document.createElement("h3");
+      title.className = "deck-title";
+      title.textContent = filenameToTitle(file.name);
+
+      const subtitle = document.createElement("p");
+      subtitle.className = "deck-subtitle";
+      subtitle.textContent =
+        "Slide deck in PDF format. Click to open the full slides in a new tab.";
+
+      const meta = document.createElement("div");
+      meta.className = "deck-meta";
+
+      const tag = document.createElement("span");
+      tag.className = "deck-tag";
+      tag.textContent = "PDF · Slide deck";
+
+      const cta = document.createElement("span");
+      cta.className = "deck-cta";
+      cta.textContent = "Open slides ↗";
+
+      meta.appendChild(tag);
+      meta.appendChild(cta);
+
+      body.appendChild(title);
+      body.appendChild(subtitle);
+      body.appendChild(meta);
+
+      a.appendChild(thumb);
+      a.appendChild(body);
+      li.appendChild(a);
+
+      return li;
+    }
+
+    async function loadDecks() {
+      try {
+        const apiPath = PDF_PATH ? "/" + encodeURIComponent(PDF_PATH) : "";
+        const url = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents${apiPath}`;
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error("GitHub API error: " + res.status);
+        }
+        const data = await res.json();
+
+        const pdfFiles = (Array.isArray(data) ? data : [])
+          .filter(item => item.type === "file" && /\.pdf$/i.test(item.name))
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        deckListEl.innerHTML = "";
+
+        if (pdfFiles.length === 0) {
+          const empty = document.createElement("li");
+          empty.className = "deck";
+          empty.innerHTML = `
+            <div class="deck-link">
+              <div class="deck-body">
+                <h3 class="deck-title">No slide decks found</h3>
+                <p class="deck-subtitle">
+                  Add PDF files to this repository to have them listed here automatically.
+                </p>
+              </div>
+            </div>`;
+          deckListEl.appendChild(empty);
+          return;
+        }
+
+        pdfFiles.forEach(file => {
+          const card = createDeckCard(file);
+          deckListEl.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        deckListEl.innerHTML = "";
+        const error = document.createElement("li");
+        error.className = "deck";
+        error.innerHTML = `
+          <div class="deck-link">
+            <div class="deck-body">
+              <h3 class="deck-title">Couldn’t load slide list</h3>
+              <p class="deck-subtitle">
+                There was a problem fetching file information from the repository.
+              </p>
+            </div>
+          </div>`;
+        deckListEl.appendChild(error);
+      }
+    }
+
+    loadDecks();
+  </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+:root {
+  --bg: #020617;
+  --surface: #020617;
+  --card: #020617;
+  --border: #1e293b;
+  --border-soft: rgba(148, 163, 184, 0.5);
+  --fg: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: radial-gradient(circle at top, #0f172a 0, #020617 55%);
+  color: var(--fg);
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* Layout */
+
+.page {
+  max-width: 960px;
+  width: 100%;
+  padding: 2.5rem 1.5rem 3rem;
+  margin: auto;
+}
+
+/* Nav bar */
+
+.nav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 1.1rem;
+}
+
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: var(--muted);
+  background: rgba(15, 23, 42, 0.9);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition:
+    background 120ms ease-out,
+    border-color 120ms ease-out,
+    color 120ms ease-out,
+    transform 120ms ease-out;
+}
+
+.nav-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(56, 189, 248, 0.7);
+  color: var(--fg);
+}
+
+.nav-button--active {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.8);
+  color: var(--accent);
+}
+
+/* Header */
+
+.page-header {
+  padding: 1.75rem 1.75rem 1.5rem;
+  margin-bottom: 1.75rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #020617, #020617);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.65);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.page-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.header-kicker {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.page-header h1 {
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.7rem, 3vw, 2.1rem);
+  letter-spacing: 0.01em;
+  font-weight: 600;
+}
+
+.header-lead {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+/* Sections */
+
+.section {
+  padding-top: 0.5rem;
+}
+
+.section-title {
+  font-size: 0.82rem;
+  margin: 0 0 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* Deck list */
+
+.deck-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .deck-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Deck cards */
+
+.deck {
+  border-radius: 1.1rem;
+  border: 1px solid var(--border);
+  background: linear-gradient(150deg, var(--card), #020617);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.55);
+  overflow: hidden;
+  transition:
+    transform 120ms ease-out,
+    box-shadow 120ms ease-out,
+    border-color 120ms ease-out,
+    background 120ms ease-out;
+}
+
+.deck-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.deck:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.75);
+  border-color: rgba(56, 189, 248, 0.65);
+}
+
+.deck-thumb {
+  background: #020617;
+  border-bottom: 1px solid var(--border);
+}
+
+.deck-thumb object {
+  display: block;
+  width: 100%;
+  height: 200px;
+  border: none;
+}
+
+/* fallback text if PDF preview isn't available */
+.thumb-fallback {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* Card body */
+
+.deck-body {
+  padding: 0.9rem 1rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.deck-title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+.deck-subtitle {
+  margin: 0;
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.deck-meta {
+  margin-top: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+  gap: 0.6rem;
+}
+
+.deck-tag {
+  padding: 0.14rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.72rem;
+}
+
+.deck-cta {
+  font-size: 0.78rem;
+}
+
+/* Footer */
+
+.page-footer {
+  margin-top: 2.1rem;
+  font-size: 0.77rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.page-footer code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 0.78rem;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 0.16rem 0.4rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(15, 23, 42, 0.9);
+}
